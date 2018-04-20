@@ -1,6 +1,66 @@
+### from virtualmachine 
 
+print and sum 2nd col in file 
+```
+awk -F"\t" '{print $2;s+=$2}END{print "total:"s}' mature_sense.grouped
+```
 
-SAM and BAM filtering one-liners
+create index
+```
+samtools index mature.bam
+```
+
+count number of records (incl. unmapped !!!)
+```
+samtools view -c mirbase_aligned.bam
+```
+
+flagstat stats
+```
+samtools flagstat file.bam
+```
+
+count alignments (reads mapping to multiple locations counted multiple times)
+```
+samtools view -F 0x04 -c file.bam
+```
+
+show mapping stats
+```
+samtools idxstats mature.bam
+```
+
+bam to sam -h include header -H just header
+```
+samtools view -h accepted_hits.bam > accepted_hits.sam
+```
+
+bamToFastq
+```
+bamToFastq -i accepted_hits.bam -fq /home/srna/VM_shared/bam2fastq/61_acc.fastq
+```
+
+merge all fastq in dir
+```
+for i in *.fastq; do cat $i >> 61.fastq; done
+```
+
+count columns not null
+```
+awk -F"\t" '$8!="" {tot++;print tot "\t" $8} END{print tot}' matureTemp.bowtieOut
+```
+
+build bowtie index
+```
+bowtie-build /home/srna/VM_shared/testruns/dummy/mature.fa /home/srna/VM_shared/testruns/dummy/myMature
+```
+
+bowtie align
+```
+bowtie --chunkmbs 256 -f -p 4 -v 0 -a --norc --best --strata -e 200000 /home/srna/VM_shared/testruns/dummy/hairpin
+```
+
+### SAM and BAM filtering one-liners
 
 BWA mapping (using piping for minimal disk I/O)
 ```
